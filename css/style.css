@@ -1,0 +1,130 @@
+html {
+	font-family: 'Liberation Sans', sans-serif;
+	overflow: hidden;
+}
+
+body {
+	margin: 0px;
+	height: 100vh;
+}
+
+h4 {
+	text-align: center;
+}
+
+canvas {
+	box-sizing: border-box;
+	outline: 1px solid black;
+}
+
+canvas:hover {
+	cursor: grab;
+}
+
+canvas:active {
+	cursor: grabbing;
+}
+
+/* Flex */
+.flex {
+	display: flex;
+	align-items: center
+}
+
+.flex label, .flex input {
+	display: block;
+	flex: 1;
+}
+
+/* Input stylizing */
+button {
+	font-weight: 1000;
+	color: white;
+	background-color: cornflowerblue;
+	border-radius: 2px;
+	border: none;
+	margin: 4px;
+	padding: 5px 10px;
+	
+	transition: 0.1s;
+}
+
+button:hover {
+	cursor: pointer;
+	
+	background-color: red;
+}
+
+input[type="number"], select {
+	border: 1px solid black;
+	padding: 4px;
+	border-radius: 4px;
+	
+	background-color: #ABC;
+	
+	transition: 0.3s;
+}
+
+input[type="number"]:focus, select:focus {
+	background-color: white;
+}
+
+/* Styles related to settings */
+div#settings {
+	overflow: auto;
+	
+	position: absolute;
+	top: 0px;
+	right: -50vw;
+	
+	width: 30%;
+	height: 100vh;
+	
+	padding-left: 20px;
+	padding-right: 20px;
+	box-shadow: 0px 0px 5px black;
+	
+	color: white;
+	background-color: #000076;
+	
+	transition: 0.4s;
+}
+
+div#settings.show {
+	right: 0px;
+}
+
+
+/* Styles related to settings button */
+div#openSettings {
+	position: absolute;
+	bottom: -10px;
+	right: 0px;
+	
+	width: 100px;
+	height: 32px;
+	
+	padding: 5px;
+	border-radius: 3px;
+	
+	text-align: center;
+	font-weight: 1000;
+	
+	color: #AABCAA;
+	background-color: #3c3b3b;
+	
+	transition: 0.3s;
+	
+	user-select: none;
+}
+
+div#openSettings.show {
+	bottom: -100px;
+}
+
+div#openSettings:hover {
+	cursor: pointer;
+	
+	bottom: -4px;
+	background-color: #4d4c4c;
+}

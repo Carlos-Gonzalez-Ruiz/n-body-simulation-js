@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>N-Body simulation</title>
+		<meta charset="UTF-8">
+		
+		<script src="js/graphics.js" defer></script>
+		<script src="js/draw.js" defer></script>
+		<script src="js/drawEx.js" defer></script>
+		<script src="js/physics.js" defer></script>
+		<script src="js/sim.js" defer></script>
+		<script src="js/keyboard.js" defer></script>
+		<script src="js/controls.js" defer></script>
+		<script src="js/engine.js" defer></script>
+		<script src="js/main.js" defer></script>
+		
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+	</head>
+	<body>
+		<canvas></canvas>
+		
+		<div id="openSettings" title="Open settings.">
+			Settings
+		</div>
+		<div id="settings">
+			<div>
+				<h2><button id="closeSettings" title="Hide Settings.">×</button> Settings</h2>
+				
+				<h3>Constants</h3>
+					<div class="flex">
+						<label for="getGravity">Gravity</label>
+						<input type="number" id="getGravity">
+						<button id="setGravity">Set</button>
+					</div>
+				<div>
+					
+				</div>
+				
+				<h3>Time</h3>
+				<div>
+					<label>Pause simulation </label>
+					<button id="pause">Pause</button>
+					<br>
+					
+					<div class="flex">
+						<label for="getTimeFactor">Time factor</label>
+						<input type="number" id="getTimeFactor">
+						<button id="setTimeFactor">Set</button>
+					</div>
+				</div>
+				
+				<br>
+				
+				<h3>UI</h3>
+				<div>
+					<h4>Camera</h4>
+					<div>
+						<div class="flex">
+							<label for="getCameraPosX">Camera pos X</label>
+							<input type="number" id="getCameraPosX">
+							<button id="setCameraPosX">Set</button>
+						</div>
+						
+						<div class="flex">
+							<label for="getCameraPosY">Camera pos Y</label>
+							<input type="number" id="getCameraPosY">
+							<button id="setCameraPosY">Set</button>
+						</div>
+						
+						<div class="flex">
+							<label for="getCameraSpeed">Camera speed</label>
+							<input type="number" id="getCameraSpeed">
+							<button id="setCameraSpeed">Set</button>
+						</div>
+						
+						<div class="flex">
+							<label for="getZoomSpeed">Zoom speed</label>
+							<input type="number" id="getZoomSpeed">
+							<button id="setZoomSpeed">Set</button>
+						</div>
+					</div>
+					
+					<h4>Particle</h4>
+					<div>
+						<label>Particle size</label>
+						<button id="moreSize">+</button>
+						<button id="lessSize">-</button>
+						<span id="size"></span>
+						<br>
+						
+						(<label>Increment by: </label>
+						<input type="number" id="particleSizeIncrement">)
+						<br>
+						
+						<div class="flex">
+							<label for="getParticleLineCount">Particle line count</label>
+							<input type="number" id="getParticleLineCount">
+							<button id="setParticleLineCount">Set</button>
+						</div>
+						
+						<div class="flex">
+							<label for="getParticleLineCount">Particle line rate (60 = 1s)</label>
+							<input type="number" id="getParticleLineRate">
+							<button id="setParticleLineRate">Set</button>
+						</div>
+						
+						<input id="frustrumCulling" type="checkbox">
+						<label for="frustrumCulling">Apply frustrum culling. (useful when too many particles)</label>
+						<br>
+					</div>
+					
+					<br>
+					
+					<h4>Visualization</h4>
+					<div>
+						<label for="xTrans">X canvas axis coordinate translation</label>
+						<select id="xTrans">
+							<option value="x">X</option>
+							<option value="y">Y</option>
+							<option value="z">Z</option>
+						</select>
+						<br>
+						<label for="yTrans">Y canvas axis coordinate translation</label>
+						<select id="yTrans">
+							<option value="x">X</option>
+							<option value="y">Y</option>
+							<option value="z">Z</option>
+						</select>
+						<br>
+						
+						<br>
+						
+						<input id="showImage" type="checkbox">
+						<label for="showImage">Use flare image for particles instead.</label>
+						<br>
+						
+						<input id="showGrid" type="checkbox">
+						<label for="showGrid">Display grid.</label>
+						<br>
+						
+						<div class="flex">
+							<label for="getGridSize">Grid Size</label>
+							<input type="number" id="getGridSize">
+							<button id="setGridSize">Set</button>
+						</div>
+						
+						<br>
+						
+						<input id="gridColor" type="color">
+						<label for="gridColor">Grid color</label>
+						<br>
+						
+						<input id="backgroundColor" type="color">
+						<label for="backgroundColor">Background color</label>
+						<br>
+						
+						<input id="textColor" type="color">
+						<label for="textColor">Text color</label>
+						<br>
+					</div>
+				</div>
+				
+				<br>
+				<br>
+				<p>N-Body simulation JS by 0x2A (Carlos González)</p>
+				<br>
+				<br>
+			</div>
+		</div>
+	</body>
+</html>
