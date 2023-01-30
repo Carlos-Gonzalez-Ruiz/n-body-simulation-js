@@ -24,7 +24,7 @@ function DrawCircle(x, y, radius, color) {
 	}
 
 	graphics_context.beginPath();
-	graphics_context.arc(x, y, radius, 0, 2 * Math.PI);
+	graphics_context.arc(x + graphics_canvas.width / 2, y + graphics_canvas.height / 2, radius, 0, 2 * Math.PI);
 	graphics_context.fillStyle = color;
 	graphics_context.strokeStyle = color;
 	graphics_context.stroke();
@@ -42,15 +42,24 @@ function DrawCircleFill(x, y, radius, color) {
 	graphics_context.fill();
 }
 
-function DrawImage(x, y, width, height, urlImage) { // EXPERIMENTAL, NOT TESTED (TODO)
+function DrawImage(x, y, width, height, image, color, showCentered) {
 	if (color == undefined) {
-		color = "#000000";
+		color = "#FFFFFF";
 	}
 	
-	let image = document.createElement("img");
-	image.src = urlImage;
-	
-	graphics_context.drawImage(img, x, y, width, height);
+	if (showCentered != undefined && showCentered) {
+		graphics_context.drawImage(	document.getElementById(image),
+						x + (-width + graphics_canvas.width) / 2,
+						y + (-height + graphics_canvas.height) / 2,
+						width,
+						height);
+	} else {
+		graphics_context.drawImage(	document.getElementById(image),
+						x + graphics_canvas.width / 2,
+						y + graphics_canvas.height / 2,
+						width,
+						height);
+	}
 }
 
 function DrawText(x, y, text, color, fontSize, fontFamily) { // fontSize must be in pixels.
@@ -70,6 +79,6 @@ function DrawText(x, y, text, color, fontSize, fontFamily) { // fontSize must be
 	for (const i in lines) {
 		graphics_context.font = fontSize + "px " + fontFamily;
 		graphics_context.fillStyle = color;
-		graphics_context.fillText(lines[i], x, y + i * fontSize);
+		graphics_context.fillText(lines[i], x + graphics_canvas.width / 2, y + graphics_canvas.height / 2 + i * fontSize);
 	}
 }

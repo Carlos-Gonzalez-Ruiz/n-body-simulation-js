@@ -9,8 +9,9 @@
 		<script src="js/drawEx.js" defer></script>
 		<script src="js/physics.js" defer></script>
 		<script src="js/sim.js" defer></script>
-		<script src="js/keyboard.js" defer></script>
 		<script src="js/controls.js" defer></script>
+		<script src="js/sandbox.js" defer></script>
+		<script src="js/keyboard.js" defer></script>
 		<script src="js/engine.js" defer></script>
 		<script src="js/main.js" defer></script>
 		
@@ -19,12 +20,76 @@
 	<body>
 		<canvas></canvas>
 		
-		<div id="openSettings" title="Open settings.">
-			Settings
+		<div id="tabs">
+			<div id="openSandbox" title="Open sandbox.">
+				Sandbox
+			</div>
+			<div id="openSettings" title="Open settings.">
+				Settings
+			</div>
+			<div id="openAbout" title="About this simulator.">
+				About
+			</div>
 		</div>
-		<div id="settings">
-			<div>
-				<h2><button id="closeSettings" title="Hide Settings.">×</button> Settings</h2>
+		<div id="contents">
+			<div id="sandbox">
+				<h2><button id="closeSandbox" title="Hide sandbox.">×</button> Sandbox</h2>
+				
+				<h3>Particles</h3>
+				<div id="particleList" style="min-height: 75vh; max-height: 75vh; overflow: scroll;">
+					
+				</div>
+				
+				<h3>Tools</h3>
+				<div>
+					<h4>New particle properties</h4>
+					<div>
+						<div class="flex">
+							<label for="getNewParticleColor">Color</label>
+							<input type="color" id="getNewParticleColor">
+						</div>
+						<div class="flex">
+							<label for="getNewParticleName">Name</label>
+							<input type="text" id="getNewParticleName">
+						</div>
+						<div class="flex">
+							<label for="getNewParticleMass">Mass</label>
+							<input type="number" id="getNewParticleMass">
+						</div>
+						<div class="flex">
+							<label for="getNewParticleSpeedX">Speed X</label>
+							<input type="number" id="getNewParticleSpeedX">
+						</div>
+						<div class="flex">
+							<label for="getNewParticleSpeedY">Speed Y</label>
+							<input type="number" id="getNewParticleSpeedY">
+						</div>
+						<div class="flex">
+							<label for="getNewParticleSpeedZ">Speed Z</label>
+							<input type="number" id="getNewParticleSpeedZ">
+						</div>
+						<button id="addParticle">Add particles</button><span>(Add by pressing Left Click + Ctrl and finish adding by pressing Escape)</span>
+						<br>
+					</div>
+				</div>
+				
+				<h3>Presets</h3>
+				<div>
+					<select id="getPreset">
+						<option value="1">Solar System</option>
+						<option value="2">Random system</option>
+						<option value="3">Random galaxy</option>
+						<option value="4">Galaxy cluster</option>
+						<option value="5">Galaxy supercluster</option>
+					</select>
+					<button id="setPreset">Set</button>
+				</div>
+				
+				<br>
+				<br>
+			</div>
+			<div id="settings">
+				<h2><button id="closeSettings" title="Hide settings.">×</button> Settings</h2>
 				
 				<h3>Constants</h3>
 					<div class="flex">
@@ -104,8 +169,12 @@
 							<button id="setParticleLineRate">Set</button>
 						</div>
 						
+						<input id="showParticleLine" type="checkbox">
+						<label for="showParticleLine">Show particle lines.</label>
+						<br>
+						
 						<input id="frustrumCulling" type="checkbox">
-						<label for="frustrumCulling">Apply frustrum culling. (useful when too many particles)</label>
+						<label for="frustrumCulling">Apply (naive) frustrum culling. (useful when too many particles)</label>
 						<br>
 					</div>
 					
@@ -162,10 +231,18 @@
 				
 				<br>
 				<br>
-				<p>N-Body simulation JS by 0x2A (Carlos González)</p>
-				<br>
-				<br>
 			</div>
+			<div id="about">
+				<h2><button id="closeAbout" title="Hide about.">×</button> About</h2>
+				<p>Simple N-Body simulation in Vanilla JavaScript of our solar system from example code taken from wikipedia. <a href="https://en.wikipedia.org/wiki/N-body_simulation">Wikipedia</a></p>
+				<p><a href="https://github.com/0X2A/n-body-simulation-js/">GitHub Repository</a></p>
+				<p style="color: gray;">By 0x2A in January of 2023 (Carlos González)</p>
+			</div>
+		</div>
+		
+		<!-- CANVAS IMAGE RESOURCES -->
+		<div style="display: none;">
+			<img id="flare" src="img/flare.png">
 		</div>
 	</body>
 </html>

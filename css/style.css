@@ -25,7 +25,21 @@ canvas:active {
 	cursor: grabbing;
 }
 
-/* Flex */
+/* Links. */
+a, a:visited {
+	color: white;
+	transition: 0.1s;
+}
+
+a:hover {
+	color: lawngreen;
+}
+
+a:active {
+	color: red;
+}
+
+/* Flex. */
 .flex {
 	display: flex;
 	align-items: center
@@ -36,7 +50,11 @@ canvas:active {
 	flex: 1;
 }
 
-/* Input stylizing */
+.flex div {
+	flex: 1;
+}
+
+/* Input stylizing. */
 button {
 	font-weight: 1000;
 	color: white;
@@ -49,13 +67,17 @@ button {
 	transition: 0.1s;
 }
 
+button.hold {
+	background-color: blue;
+}
+
 button:hover {
 	cursor: pointer;
 	
 	background-color: red;
 }
 
-input[type="number"], select {
+input[type="text"], input[type="number"], input[type="color"], select {
 	border: 1px solid black;
 	padding: 4px;
 	border-radius: 4px;
@@ -65,12 +87,12 @@ input[type="number"], select {
 	transition: 0.3s;
 }
 
-input[type="number"]:focus, select:focus {
+input[type="text"]:focus, input[type="number"]:focus, input[type="color"]:focus, select:focus {
 	background-color: white;
 }
 
-/* Styles related to settings */
-div#settings {
+/* Styles related to contents. */
+div#contents {
 	overflow: auto;
 	
 	position: absolute;
@@ -90,16 +112,25 @@ div#settings {
 	transition: 0.4s;
 }
 
-div#settings.show {
+div#contents.show {
 	right: 0px;
 }
 
 
-/* Styles related to settings button */
-div#openSettings {
+/* Styles related to tabs. */
+div#tabs {
 	position: absolute;
-	bottom: -10px;
 	right: 0px;
+	bottom: 0px;
+	
+	transition: 0.3s;
+}
+
+div#tabs div {
+	display: inline-block;
+	
+	position: relative;
+	bottom: -10px;
 	
 	width: 100px;
 	height: 32px;
@@ -118,13 +149,48 @@ div#openSettings {
 	user-select: none;
 }
 
-div#openSettings.show {
+div#tabs.show {
 	bottom: -100px;
 }
 
-div#openSettings:hover {
+div#tabs div:hover {
 	cursor: pointer;
 	
 	bottom: -4px;
 	background-color: #4d4c4c;
+}
+
+/* Selected particle from particle list. */
+div#particleList div#selected {
+	color: red;
+}
+
+/* Information box from particle list. */
+div#particleList div.info, div#particleList {
+	margin: 0px 10px 10px 10px;
+	border: 1px solid blueviolet;
+	background-color: #000039;
+	padding: 5px 10px;
+	
+	animation-name: fadeInBox;
+	animation-duration: 0.1s;
+}
+
+/* Inputs inside particle list. */
+div#particleList input[type="number"] {
+	width: 40%;
+}
+
+/* Animations. */
+@keyframes fadeInBox {
+	0% {
+		transform-origin: top;
+		transform: scaleY(0%);
+		opacity: 0.5;
+	}
+	100% {
+		transform-origin: top;
+		transform: scaleY(100%);
+		opacity: 1;
+	}
 }

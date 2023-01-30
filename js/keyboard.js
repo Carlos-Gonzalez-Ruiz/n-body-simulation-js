@@ -11,6 +11,8 @@ let keyboard_Wheel_deltaY = 0;
 
 let keyboard_Cursor_posX = 0;
 let keyboard_Cursor_posY = 0;
+let keyboard_Cursor_leftPressed = false;
+let keyboard_Cursor_leftReleased = 0;
 
 window.onkeyup = function(e) {
 	keyboard_pressed[e.key] = false;
