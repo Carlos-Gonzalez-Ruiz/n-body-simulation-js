@@ -4,7 +4,7 @@ Simple N-Body simulation of point particles of our solar system from example cod
 I was bored at class and decided to write this extremely basic simulator in Vanilla JavaScript + Canvas, as I thought It should not take that much time to implement (and I was right ;) ).
 It is possible that in the next few weeks I might add more features, as well as some optimizations, since I plan to add this to my Universe simulator.
 
-As a note, the variable "time factor" is... well, it kinda functions right, but might give you imprecise results because of how the physics are implemented. Basically, the final velocity of the body of each step is multiplied by the time factor, so higher time factor, crazier orbits, so that's why if you add more 0s to "time factor", particles will just simply "run away from center".
+As a note, the variable "time factor" is... well, it kinda functions right, but might give you imprecise results because of how the physics are implemented. Basically, the final velocity of the body of each step is multiplied by the time factor, so higher time factor, more messed up orbits, so the more 0s to "time factor" you add, particles will just simply "run away from center".
 It is possible to fix this by repeating the process again with a lesser time factor again (at the cost of performance), but honestly, I think it's good so far. I might change of opinion later on.
 
 ## Changelog
