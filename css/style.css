@@ -92,13 +92,13 @@ input[type="text"]:focus, input[type="number"]:focus, input[type="color"]:focus,
 }
 
 textarea {
-	font-family: 'monospace';
+	font-family: 'monospace', 'Liberation Mono';
 	font-size: 0.8em;
 	
 	resize: vertical;
 	white-space: pre;
 	overflow-wrap: normal;
-	overflow-x: scroll;
+	overflow: auto;
 	
 	width: 95%;
 	height: 40vh;
