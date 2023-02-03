@@ -1,5 +1,17 @@
 "use strict";
 
+// Simulator.
+
+// Enums
+
+const SimUiModes = Object.freeze({
+	CAMERA: Symbol("camera"),
+	ADD: Symbol("add")
+})
+
+
+// Global variables
+
 let sim_Ui_particleFactor = 10.0e9;
 let sim_Ui_particleSize = 10;
 let sim_Ui_particleHovering = false;
@@ -27,16 +39,39 @@ let sim_Ui_textColor = "#000000";
 
 let sim_Ui_frustrumCulling = false;
 
-let sim_Ui_mode = "camera"; // Mode: "camera", "add"
+let sim_Ui_mode = SimUiModes.CAMERA; // Mode: SimUiModes.CAMERA, SimUiModes.ADD
 
 let sim_time = 0;
-let sim_timeFactor = 100000/*10000*/;
+let sim_timeFactor = 10000;
 let sim_timeFrames = 0;
+
 let sim_gravity = 6.67e-11; // Gravitational constant
-let sim_particles = {};
+let sim_hubble = 69800; // Hubble constant
+
+
+// Functions
 
 function SimCreation() {
-	PhysicsPreData();
+	switch (document.querySelector("select#getPreset").value) {
+		case "1":
+			PhysicsPreData(PhysicsPreDataType.SOLAR_SYSTEM);
+		break;
+		case "2":
+			PhysicsPreData(PhysicsPreDataType.RANDOM_SYSTEM);
+		break;
+		case "3":
+			PhysicsPreData(PhysicsPreDataType.RANDOM_GALAXY);
+		break;
+		case "4":
+			PhysicsPreData(PhysicsPreDataType.CLUSTER);
+		break;
+		case "5":
+			PhysicsPreData(PhysicsPreDataType.SUPERCLUSTER);
+		break;
+		default:
+			PhysicsPreData();
+		break;
+	}
 	
 	ControlsCreation();
 }
@@ -53,8 +88,8 @@ function SimRendering() {
 function SimDrawParticles() {
 	sim_Ui_particleHovering = false;
 	
-	for (const i in sim_particles) {
-		DrawParticle(sim_particles[i]);
+	for (const i in physics_particles) {
+		DrawParticle(physics_particles[i]);
 	}
 	
 	{ // Change cursor when hovering a particle or hovering selected particle.
@@ -79,7 +114,7 @@ function SimDrawParticles() {
 			
 				graphics_canvas.style.cursor = "pointer";
 			
-		} else if (sim_Ui_mode == "add" && KeyboardCheckPressed("Control")) { // Change cursor icon when adding particle.
+		} else if (sim_Ui_mode == SimUiModes.ADD && KeyboardCheckPressed("Control")) { // Change cursor icon when adding particle.
 			graphics_canvas.style.cursor = "crosshair";
 		} else {
 			graphics_canvas.style.removeProperty("cursor");
@@ -90,16 +125,16 @@ function SimDrawParticles() {
 function SimStopTime() {
 	if (sim_timeFactor == 0) {
 		sim_timeFactor = 10000;
-		document.querySelector("button#pause").innerHTML = "Pause";
+		document.querySelector("button#pause").innerHTML = TEXT_PAUSE;
 	} else {
 		sim_timeFactor = 0;
-		document.querySelector("button#pause").innerHTML = "Paused";
+		document.querySelector("button#pause").innerHTML = TEXT_PAUSED;
 	}
 }
 
 function SimParticleSelect(key) {
 	// Select particle.
-	sim_Ui_particleSelect = sim_particles[key];
+	sim_Ui_particleSelect = physics_particles[key];
 	
 	// Remove styles.
 	let selected = document.querySelector("div#particleList div#selected");
@@ -133,19 +168,24 @@ function SimParticleFollow(key) {
 		elementNew.dataset.following = "true";
 		
 		// Follow particle.
-		sim_Ui_particleFollow = sim_particles[key];
+		sim_Ui_particleFollow = physics_particles[key];
 	}
 }
 
-function SimParticleAdd(particle) {
-	sim_particles[Object.keys(sim_particles).length] = particle;
-	console.log(sim_particles);
+function SimRestart() {
+	sim_time = 0;
+	sim_Ui_cameraPosX = 0;
+	sim_Ui_cameraPosY = 0;
 	
-	SandboxFillList();
+	physics_type = PhysicsType.STAR;
 }
 
-function SimParticleRemove(key) {
-	delete sim_particles[key];
+function SimEmpty() {
+	physics_particles = {};
+	physics_particleCount = 0;
+	
+	physics_darkParticles = {};
+	physics_darkParticleCount = 0;
 	
 	SandboxFillList();
 }
@@ -155,7 +195,7 @@ function SimUiSetMode(mode) {
 	
 	// Stylize add particle button.
 	let button = document.querySelector("button#addParticle");
-	if (sim_Ui_mode == "add") {
+	if (sim_Ui_mode == SimUiModes.ADD) {
 		button.classList.add("hold");
 	} else {
 		button.classList.remove("hold");

@@ -4,6 +4,7 @@
 		<title>N-Body simulation</title>
 		<meta charset="UTF-8">
 		
+		<script src="js/constants.js" defer></script>
 		<script src="js/graphics.js" defer></script>
 		<script src="js/draw.js" defer></script>
 		<script src="js/drawEx.js" defer></script>
@@ -21,6 +22,9 @@
 		<canvas></canvas>
 		
 		<div id="tabs">
+			<div id="openJS" title="Open JavaScript editor.">
+				JavaScript
+			</div>
 			<div id="openSandbox" title="Open sandbox.">
 				Sandbox
 			</div>
@@ -31,14 +35,34 @@
 				About
 			</div>
 		</div>
-		<div id="contents">
+		<div id="contentsX" style="padding: 0px;">
+			<div id="JS" style="margin: 20px;">
+				<h2><button id="closeJS" title="Hide JavaScript.">×</button> JavaScript</h2>
+				
+				<div style="display: flex;">
+					<div style="flex: 3;">
+						<textarea spellcheck="false" id="getCode"></textarea>
+						<br>
+						<button id="execCode">Execute</button>
+						<button id="restartSimulation">Restart</button>
+						<button id="emptyExecCode">Empty & Execute</button>
+						<button id="emptySimulation">Empty simulation</button>
+					</div>
+					
+					<div style="flex: 1;">
+						<h4>JS Output</h4>
+						<div id="jsOutput" class="info" style="min-height: 30vh;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="contentsYLeft">
+			<h3>Particles</h3>
+			<div id="particleList" style="min-height: 80vh; max-height: 60vh; overflow: scroll;"></div>
+		</div>
+		<div id="contentsYRight">
 			<div id="sandbox">
 				<h2><button id="closeSandbox" title="Hide sandbox.">×</button> Sandbox</h2>
-				
-				<h3>Particles</h3>
-				<div id="particleList" style="min-height: 75vh; max-height: 75vh; overflow: scroll;">
-					
-				</div>
 				
 				<h3>Tools</h3>
 				<div>
@@ -84,21 +108,22 @@
 					</select>
 					<button id="setPreset">Set</button>
 				</div>
-				
-				<br>
-				<br>
 			</div>
 			<div id="settings">
 				<h2><button id="closeSettings" title="Hide settings.">×</button> Settings</h2>
 				
 				<h3>Constants</h3>
+				<div>
 					<div class="flex">
 						<label for="getGravity">Gravity</label>
 						<input type="number" id="getGravity">
 						<button id="setGravity">Set</button>
 					</div>
-				<div>
-					
+					<div class="flex">
+						<label for="getHubble">Hubble</label>
+						<input type="number" id="getHubble">
+						<button id="setHubble">Set</button>
+					</div>
 				</div>
 				
 				<h3>Time</h3>
@@ -114,7 +139,20 @@
 					</div>
 				</div>
 				
-				<br>
+				<h3>Physics</h3>
+				<div>
+					<div class="flex">
+						<label for="getPhysicsType">Physics type</label>
+						<select id="getPhysicsType">
+							<option value="0">Star</option>
+							<option value="1">Galaxy</option>
+							<option value="2">Cluster</option>
+							<option value="3">Supercluster</option>
+						</select>
+						<button id="setPhysicsType">Set</button>
+					</div>
+					<p id="physicsTypeDesc"></p>
+				</div>
 				
 				<h3>UI</h3>
 				<div>
@@ -234,9 +272,9 @@
 			</div>
 			<div id="about">
 				<h2><button id="closeAbout" title="Hide about.">×</button> About</h2>
-				<p>Simple N-Body simulation in Vanilla JavaScript of our solar system from example code taken from wikipedia. <a href="https://en.wikipedia.org/wiki/N-body_simulation">Wikipedia</a></p>
+				<p>Simple N-Body point particle simulation in Vanilla JavaScript of our solar system from example code taken from wikipedia. <a href="https://en.wikipedia.org/wiki/N-body_simulation">Wikipedia</a></p>
 				<p><a href="https://github.com/0X2A/n-body-simulation-js/">GitHub Repository</a></p>
-				<p style="color: gray;">By 0x2A in January of 2023 (Carlos González)</p>
+				<p style="color: gray;">By 0x2A in January-February of 2023 (Carlos González)</p>
 			</div>
 		</div>
 		

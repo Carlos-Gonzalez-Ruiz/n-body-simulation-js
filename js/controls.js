@@ -13,11 +13,25 @@ let controls_hasMoved = false;
 function ControlsCreation() {
 	{ // Add generic listeners.
 		// Disallow zooming when mouse is on contents box.
-		document.querySelector("div#contents").onmouseover = function() {
+		document.querySelector("div#contentsYLeft").onmouseover = function() {
 			controls_canZoom = false;
 			controls_dragging = false; // Prevent dragging just in case.
 		};
-		document.querySelector("div#contents").onmouseout = function() {
+		document.querySelector("div#contentsYLeft").onmouseout = function() {
+			controls_canZoom = true;
+		};
+		document.querySelector("div#contentsYRight").onmouseover = function() {
+			controls_canZoom = false;
+			controls_dragging = false; // Prevent dragging just in case.
+		};
+		document.querySelector("div#contentsYRight").onmouseout = function() {
+			controls_canZoom = true;
+		};
+		document.querySelector("div#contentsX").onmouseover = function() {
+			controls_canZoom = false;
+			controls_dragging = false; // Prevent dragging just in case.
+		};
+		document.querySelector("div#contentsX").onmouseout = function() {
 			controls_canZoom = true;
 		};
 		
@@ -25,7 +39,7 @@ function ControlsCreation() {
 		document.querySelector("canvas").addEventListener("mousedown", function(e) {
 			switch (e.which) {
 				case 1: // Left mouse button.
-					if (KeyboardCheckPressed("Control") && sim_Ui_mode == "add") {
+					if (KeyboardCheckPressed("Control") && sim_Ui_mode == SimUiModes.ADD) {
 						let	posX = 0, posY = 0, posZ = 0;
 						
 						switch (sim_Ui_cameraTransX) {
@@ -59,7 +73,7 @@ function ControlsCreation() {
 										Number(document.querySelector("input#getNewParticleMass").value),
 										document.querySelector("input#getNewParticleColor").value,
 										document.querySelector("input#getNewParticleName").value);
-						SimParticleAdd(particle);
+						PhysicsParticleAdd(particle);
 					} else {
 						// Prevent user from dragging when hovering particle.
 						if (!sim_Ui_particleHovering) {
@@ -105,40 +119,143 @@ function ControlsCreation() {
 	}
 	
 	{ // Menus.
-		let 	functionOpen = function(contentTitle) {
+		let 	functionOpenX = function(contentTitle) {
+				document.querySelector("div#JS").style.display = contentTitle == "JS" ? "block" : "none";
+				
+				document.querySelector("div#contentsX").classList.add("show");
+				document.querySelector("div#tabs").classList.add("show");
+			},
+			functionCloseX = function(contentTitle) {
+				document.querySelector("div#contentsX").classList.remove("show");
+				document.querySelector("div#tabs").classList.remove("show");
+			},
+			functionOpenY = function(contentTitle) {
 				document.querySelector("div#sandbox").style.display = contentTitle == "sandbox" ? "block" : "none";
 				document.querySelector("div#settings").style.display = contentTitle == "settings" ? "block" : "none";
 				document.querySelector("div#about").style.display = contentTitle == "about" ? "block" : "none";
 				
-				document.querySelector("div#contents").classList.add("show");
+				if (contentTitle == "sandbox") {
+					document.querySelector("div#contentsYLeft").classList.add("show");
+				}
+				
+				document.querySelector("div#contentsYRight").classList.add("show");
 				document.querySelector("div#tabs").classList.add("show");
 			},
-			functionClose = function(contentTitle) {
-				document.querySelector("div#contents").classList.remove("show");
+			functionCloseY = function(contentTitle) {
+				document.querySelector("div#contentsYLeft").classList.remove("show");
+				document.querySelector("div#contentsYRight").classList.remove("show");
 				document.querySelector("div#tabs").classList.remove("show");
 			};
 		
+		// JavaScript.
+		document.querySelector("div#openJS").onclick = function() { functionOpenX("JS"); };
+		document.querySelector("button#closeJS").onclick = function() { functionCloseX("JS"); };
+		
 		// Sandbox.
-		document.querySelector("div#openSandbox").onclick = function() { functionOpen("sandbox"); };
-		document.querySelector("button#closeSandbox").onclick = function() { functionClose("sandbox"); };
+		document.querySelector("div#openSandbox").onclick = function() { functionOpenY("sandbox"); };
+		document.querySelector("button#closeSandbox").onclick = function() { functionCloseY("sandbox"); };
 		
 		// Settings.
-		document.querySelector("div#openSettings").onclick = function() { functionOpen("settings"); };
-		document.querySelector("button#closeSettings").onclick = function() { functionClose("settings"); };
+		document.querySelector("div#openSettings").onclick = function() { functionOpenY("settings"); };
+		document.querySelector("button#closeSettings").onclick = function() { functionCloseY("settings"); };
 		
 		// About.
-		document.querySelector("div#openAbout").onclick = function() { functionOpen("about"); };
-		document.querySelector("button#closeAbout").onclick = function() { functionClose("about"); };
+		document.querySelector("div#openAbout").onclick = function() { functionOpenY("about"); };
+		document.querySelector("button#closeAbout").onclick = function() { functionCloseY("about"); };
+	}
+	
+	{ // Set JS content.
+		// Textarea
+		let textarea = document.querySelector("textarea#getCode");
+		textarea.addEventListener("keydown", function(e) {
+			if (e.key == "Tab") {
+				e.preventDefault();
+				let start = this.selectionStart;
+				let end = this.selectionEnd;
+				
+				// set textarea value to: text before caret + tab + text after caret
+				this.value = this.value.substring(0, start) + "\t" + this.value.substring(end);
+
+				// put caret at right position again
+				this.selectionStart = this.selectionEnd = start + 1;
+			}
+		});
+		if (!!!textarea.value) { // If textarea hasn't been changed, do not overwrite the previous value.
+			textarea.value = TEXTAREA_CODE;
+		}
+		
+		// Textarea buttons
+		document.querySelector("button#execCode").onclick = function() {
+			let code = document.querySelector("textarea#getCode");
+			try {
+				eval(code.value);
+				code.dataset.prevCode = code.value;
+				document.querySelector("div#jsOutput").innerHTML = "";
+			} catch (e) {
+				document.querySelector("div#jsOutput").innerHTML = e;
+			}
+			SandboxFillList();
+		};
+		document.querySelector("button#restartSimulation").onclick = function() {
+			SimRestart();
+			
+			let code = document.querySelector("textarea#getCode");
+			if (code.dataset.prevCode != undefined) {
+				eval(code.dataset.prevCode);
+			}
+			SandboxFillList();
+		};
+		document.querySelector("button#emptyExecCode").onclick = function() {
+			SimEmpty();
+			SimRestart();
+			
+			let code = document.querySelector("textarea#getCode");
+			try {
+				eval(code.value);
+				code.dataset.prevCode = code.value;
+				document.querySelector("div#jsOutput").innerHTML = "";
+			} catch (e) {
+				document.querySelector("div#jsOutput").innerHTML = e;
+			}
+			SandboxFillList();
+		};
+		document.querySelector("button#emptySimulation").onclick = function() {
+			SimEmpty();
+			SandboxFillList();
+		};
 	}
 	
 	{ // Set sandbox content.
 		// Fill list with particles.
 		SandboxFillList();
 		
-		// Add particle button.
+		// Add particle button
 		document.querySelector("button#addParticle").onclick = function() {
-			SimUiSetMode(sim_Ui_mode == "camera" ? "add" : "camera");
+			SimUiSetMode(sim_Ui_mode == SimUiModes.CAMERA ? SimUiModes.ADD : SimUiModes.CAMERA);
 		};
+		
+		// Select preset
+		document.querySelector("button#setPreset").onclick = function() {
+			switch (document.querySelector("select#getPreset").value) {
+				case "1":
+					PhysicsPreData(PhysicsPreDataType.SOLAR_SYSTEM);
+				break;
+				case "2":
+					PhysicsPreData(PhysicsPreDataType.RANDOM_SYSTEM);
+				break;
+				case "3":
+					PhysicsPreData(PhysicsPreDataType.RANDOM_GALAXY);
+				break;
+				case "4":
+					PhysicsPreData(PhysicsPreDataType.CLUSTER);
+				break;
+				case "5":
+					PhysicsPreData(PhysicsPreDataType.SUPERCLUSTER);
+				break;
+			}
+			
+			SandboxFillList();
+		}
 	}
 	{ // Set settings content.
 		// Gravity
@@ -148,6 +265,15 @@ function ControlsCreation() {
 			let input = document.querySelector("input[type='number']#getGravity");
 			
 			sim_gravity = !!input.value ? Number(input.value) : input.placeholder;
+		}
+		
+		// Hubble
+		document.querySelector("input[type='number']#getHubble").value = sim_hubble;
+		document.querySelector("input[type='number']#getHubble").placeholder = sim_hubble;
+		document.querySelector("button#setHubble").onclick = function(e) {
+			let input = document.querySelector("input[type='number']#getHubble");
+			
+			sim_hubble = !!input.value ? Number(input.value) : input.placeholder;
 		}
 		
 		// Pause time
@@ -163,6 +289,50 @@ function ControlsCreation() {
 			
 			sim_timeFactor = !!input.value ? Number(input.value) : input.placeholder;
 		}
+		
+		// Physics type
+		document.querySelector("select#getPhysicsType").value = "0";
+		document.querySelector("select#getPhysicsType").onchange = function() {
+			let desc = document.querySelector("p#physicsTypeDesc");
+			
+			switch(document.querySelector("select#getPhysicsType").value) {
+				case "0":
+					desc.innerHTML = PHYSICS_TYPE_STAR_DESC;
+				break;
+				case "1":
+					desc.innerHTML = PHYSICS_TYPE_GALAXY_DESC;
+				break;
+				case "2":
+					desc.innerHTML = PHYSICS_TYPE_CLUSTER_DESC;
+				break;
+				case "3":
+					desc.innerHTML = PHYSICS_TYPE_SUPERCLUSTER_DESC;
+				break;
+			}
+		}
+		document.querySelector("button#setPhysicsType").onclick = function() {
+			let desc = document.querySelector("p#physicsTypeDesc");
+			
+			switch(document.querySelector("select#getPhysicsType").value) {
+				case "0":
+					PhysicsSetType(PhysicsType.STAR);
+					desc.innerHTML = PHYSICS_TYPE_STAR_DESC;
+				break;
+				case "1":
+					PhysicsSetType(PhysicsType.GALAXY);
+					desc.innerHTML = PHYSICS_TYPE_GALAXY_DESC;
+				break;
+				case "2":
+					PhysicsSetType(PhysicsType.CLUSTER);
+					desc.innerHTML = PHYSICS_TYPE_CLUSTER_DESC;
+				break;
+				case "3":
+					PhysicsSetType(PhysicsType.SUPERCLUSTER);
+					desc.innerHTML = PHYSICS_TYPE_SUPERCLUSTER_DESC;
+				break;
+			}
+		}
+		document.querySelector("p#physicsTypeDesc").innerHTML = PHYSICS_TYPE_STAR_DESC;
 		
 		// Camera pos X
 		document.querySelector("input[type='number']#getCameraPosX").value = sim_Ui_cameraPosX;
@@ -314,7 +484,7 @@ function ControlsUpdate() {
 	}
 	
 	// Key handling.
-	if (KeyboardCheckPressed('W') || KeyboardCheckPressed('ArrowUp')) {
+	/*if (KeyboardCheckPressed('W') || KeyboardCheckPressed('ArrowUp')) {
 		sim_Ui_cameraPosY += sim_Ui_cameraSpeed * sim_Ui_particleFactor;
 		controls_hasMoved = true;
 	}
@@ -329,12 +499,12 @@ function ControlsUpdate() {
 	if (KeyboardCheckPressed('D') || KeyboardCheckPressed('ArrowRight')) {
 		sim_Ui_cameraPosX -= sim_Ui_cameraSpeed * sim_Ui_particleFactor;
 		controls_hasMoved = true;
-	}
+	}*/
 	if (KeyboardCheckPressedOnce('F1')) { // Stop time.
 		SimStopTime();
 	}
-	if (sim_Ui_mode == "add" && KeyboardCheckPressedOnce("Escape")) { // Stop adding particles.
-		SimUiSetMode("camera");
+	if (sim_Ui_mode == SimUiModes.ADD && KeyboardCheckPressedOnce("Escape")) { // Stop adding particles.
+		SimUiSetMode(SimUiModes.CAMERA);
 	}
 	
 	if (controls_canZoom) {
@@ -375,7 +545,9 @@ function ControlsUpdate() {
 			amountX = Math.round(graphics_canvas.width / size / 2),
 			amountY = Math.round(graphics_canvas.height / size / 2),
 			offsetX = (sim_Ui_cameraPosX / sim_Ui_particleFactor) % size,
-			offsetY = (sim_Ui_cameraPosY / sim_Ui_particleFactor) % size;
+			offsetY = (sim_Ui_cameraPosY / sim_Ui_particleFactor) % size,
+			cleanOffsetX = (sim_Ui_cameraPosX / sim_Ui_particleFactor),
+			cleanOffsetY = (sim_Ui_cameraPosY / sim_Ui_particleFactor);
 		
 		// X axis
 		for (let x = -amountX; x < amountX + 1; ++x) {
@@ -383,7 +555,7 @@ function ControlsUpdate() {
 					-graphics_canvas.height / 2,
 					offsetX + x * size,
 					graphics_canvas.height / 2,
-					sim_Ui_gridColor + (x == 0 ? "66" : "33"));
+					sim_Ui_gridColor + (Math.floor((cleanOffsetX - x * size) / size) == -(cleanOffsetX < 0) ? "D6" : "33"));
 		}
 		// Y axis
 		for (let y = -amountY; y < amountY + 2; ++y) {
@@ -391,14 +563,14 @@ function ControlsUpdate() {
 					offsetY + y * size,
 					graphics_canvas.width / 2,
 					offsetY + y * size,
-					sim_Ui_gridColor + (y == 0 ? "66" : "33"));
+					sim_Ui_gridColor + (Math.floor((cleanOffsetY - y * size) / size) == -(cleanOffsetY < 0) ? "D6" : "33"));
 		}
 		
 		// Display axis.
-		DrawText(-graphics_canvas.width / 2, offsetY, "-" + sim_Ui_cameraTransX, "gray");
-		DrawText(graphics_canvas.width / 2 - 20, offsetY, "+" + sim_Ui_cameraTransX, "gray");
-		DrawText(offsetX, -graphics_canvas.height / 2 + 14, "-" + sim_Ui_cameraTransY, "gray");
-		DrawText(offsetX, graphics_canvas.height / 2 - 2, "+" + sim_Ui_cameraTransY, "gray");
+		DrawText(-graphics_canvas.width / 2, cleanOffsetY, "-" + sim_Ui_cameraTransX, "gray");
+		DrawText(graphics_canvas.width / 2 - 20, cleanOffsetY, "+" + sim_Ui_cameraTransX, "gray");
+		DrawText(cleanOffsetX, -graphics_canvas.height / 2 + 14, "-" + sim_Ui_cameraTransY, "gray");
+		DrawText(cleanOffsetX, graphics_canvas.height / 2 - 2, "+" + sim_Ui_cameraTransY, "gray");
 	}
 	
 	DrawText(graphics_canvas.width / 2 - 190, -graphics_canvas.height / 2 + 16, "N-Body simulation JS test", sim_Ui_textColor, 16);
@@ -407,5 +579,5 @@ function ControlsUpdate() {
 			sim_Ui_cameraTransX + " = " + sim_Ui_cameraPosX + ";\n" +
 			sim_Ui_cameraTransY + " = " + sim_Ui_cameraPosY + ";",
 			sim_Ui_textColor, 16);
-	DrawText(-graphics_canvas.width / 2, graphics_canvas.height / 2 - 4, "Elapsed Time: " + sim_time, sim_Ui_textColor, 16);
+	DrawText(30, -graphics_canvas.height / 2 + 16, "Elapsed Time: " + sim_time, sim_Ui_textColor, 16);
 }
