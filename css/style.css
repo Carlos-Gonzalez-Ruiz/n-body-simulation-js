@@ -122,7 +122,7 @@ div#contentsX {
 	color: white;
 	background-color: #000076;
 	
-	transition: 0.4s;
+	transition: var(--contents-transition-time);
 }
 
 div#contentsX.show {
@@ -137,7 +137,7 @@ div#contentsYLeft {
 	top: 0px;
 	left: -50vw;
 	
-	width: 20%;
+	width: 400px;
 	height: 100vh;
 	
 	padding-left: 20px;
@@ -147,7 +147,7 @@ div#contentsYLeft {
 	color: white;
 	background-color: #000076;
 	
-	transition: 0.4s;
+	transition: var(--contents-transition-time);
 }
 
 div#contentsYLeft.show {
@@ -171,7 +171,7 @@ div#contentsYRight {
 	color: white;
 	background-color: #000076;
 	
-	transition: 0.4s;
+	transition: var(--contents-transition-time);
 }
 
 div#contentsYRight.show {
@@ -223,12 +223,12 @@ div#tabs div:hover {
 }
 
 /* Selected particle from particle list. */
-div#particleList div#selected {
+div.list div#selected {
 	color: red;
 }
 
 /* Information box from particle list & JS Output. */
-div#particleList div.info, div#particleList, div#jsOutput {
+div.list div.info, div.list, div#jsOutput {
 	margin: 0px 10px 10px 10px;
 	border: 1px solid blueviolet;
 	background-color: #000039;
@@ -239,7 +239,7 @@ div#particleList div.info, div#particleList, div#jsOutput {
 }
 
 /* Inputs inside particle list. */
-div#particleList input[type="number"] {
+div.list input[type="number"] {
 	width: 40%;
 }
 

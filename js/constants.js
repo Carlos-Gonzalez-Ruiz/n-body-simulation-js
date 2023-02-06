@@ -45,12 +45,21 @@ PhysicsParticleAdd(tierra);
 
 // Use "PhysicsParticleRemove(index)", to remove a particle.
 
+// Use "PhysicsDarkParticleAdd([Object Particle])",
+// "PhysicsDarkParticleRemove(index)", to instantiate dark
+// particles.
+
 // It is recommended to keep these comments so you can use them to
 // create your own pieces of code.
 `;
 
 const TEXT_PAUSE = "Pause";
 const TEXT_PAUSED = "Paused";
+
+const TEXT_STAR = "Star";
+const TEXT_GALAXY = "Galaxy";
+const TEXT_CLUSTER = "Cluster";
+const TEXT_SUPERCLUSTER = "Supercluster";
 
 const PHYSICS_TYPE_STAR_DESC = `
 Physics for regular particles are calculated and dark particles are ignored (mass = 0, speed = 0).

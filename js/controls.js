@@ -39,7 +39,7 @@ function ControlsCreation() {
 		document.querySelector("canvas").addEventListener("mousedown", function(e) {
 			switch (e.which) {
 				case 1: // Left mouse button.
-					if (KeyboardCheckPressed("Control") && sim_Ui_mode == SimUiModes.ADD) {
+					if (KeyboardCheckPressed("Control") && sim_Ui_mode != SimUiModes.CAMERA) {
 						let	posX = 0, posY = 0, posZ = 0;
 						
 						switch (sim_Ui_cameraTransX) {
@@ -66,14 +66,25 @@ function ControlsCreation() {
 							break;
 						}
 						
-						let particle = new Particle(	Number(posX), Number(posY), Number(posZ),
-										Number(document.querySelector("input#getNewParticleSpeedX").value),
-										Number(document.querySelector("input#getNewParticleSpeedY").value),
-										Number(document.querySelector("input#getNewParticleSpeedZ").value),
-										Number(document.querySelector("input#getNewParticleMass").value),
-										document.querySelector("input#getNewParticleColor").value,
-										document.querySelector("input#getNewParticleName").value);
-						PhysicsParticleAdd(particle);
+						if (sim_Ui_mode == SimUiModes.ADD) {
+							let particle = new Particle(	Number(posX), Number(posY), Number(posZ),
+											Number(document.querySelector("input#getNewParticleSpeedX").value),
+											Number(document.querySelector("input#getNewParticleSpeedY").value),
+											Number(document.querySelector("input#getNewParticleSpeedZ").value),
+											Number(document.querySelector("input#getNewParticleMass").value),
+											document.querySelector("input#getNewParticleColor").value,
+											document.querySelector("input#getNewParticleName").value);
+							PhysicsParticleAdd(particle);
+						} else if (sim_Ui_mode == SimUiModes.ADD_DARK) {
+							let particle = new Particle(	Number(posX), Number(posY), Number(posZ),
+											Number(document.querySelector("input#getNewDarkParticleSpeedX").value),
+											Number(document.querySelector("input#getNewDarkParticleSpeedY").value),
+											Number(document.querySelector("input#getNewDarkParticleSpeedZ").value),
+											Number(document.querySelector("input#getNewDarkParticleMass").value),
+											document.querySelector("input#getNewDarkParticleColor").value,
+											document.querySelector("input#getNewDarkParticleName").value);
+							PhysicsDarkParticleAdd(particle);
+						}
 					} else {
 						// Prevent user from dragging when hovering particle.
 						if (!sim_Ui_particleHovering) {
@@ -231,7 +242,11 @@ function ControlsCreation() {
 		
 		// Add particle button
 		document.querySelector("button#addParticle").onclick = function() {
-			SimUiSetMode(sim_Ui_mode == SimUiModes.CAMERA ? SimUiModes.ADD : SimUiModes.CAMERA);
+			SimUiSetMode(sim_Ui_mode != SimUiModes.ADD ? SimUiModes.ADD : SimUiModes.CAMERA);
+		};
+		// Add dark particle button
+		document.querySelector("button#addDarkParticle").onclick = function() {
+			SimUiSetMode(sim_Ui_mode != SimUiModes.ADD_DARK ? SimUiModes.ADD_DARK : SimUiModes.CAMERA);
 		};
 		
 		// Select preset
@@ -244,7 +259,7 @@ function ControlsCreation() {
 					PhysicsPreData(PhysicsPreDataType.RANDOM_SYSTEM);
 				break;
 				case "3":
-					PhysicsPreData(PhysicsPreDataType.RANDOM_GALAXY);
+					PhysicsPreData(PhysicsPreDataType.GALAXY);
 				break;
 				case "4":
 					PhysicsPreData(PhysicsPreDataType.CLUSTER);
@@ -406,10 +421,28 @@ function ControlsCreation() {
 			sim_Ui_particleLineRate = !!input.value ? Number(input.value) : input.placeholder;
 		}
 		
+		// Show regular particles
+		document.querySelector("input[type='checkbox']#showParticles").checked = sim_Ui_particleShowRegular;
+		document.querySelector("input[type='checkbox']#showParticles").onchange = function(e) {
+			sim_Ui_particleShowRegular = e.target.checked;
+		};
+		
+		// Show dark particles
+		document.querySelector("input[type='checkbox']#showDarkParticles").checked = sim_Ui_particleShowDark;
+		document.querySelector("input[type='checkbox']#showDarkParticles").onchange = function(e) {
+			sim_Ui_particleShowDark = e.target.checked;
+		};
+		
 		// Show particle lines
 		document.querySelector("input[type='checkbox']#showParticleLine").checked = sim_Ui_particleLineShow;
 		document.querySelector("input[type='checkbox']#showParticleLine").onchange = function(e) {
 			sim_Ui_particleLineShow = e.target.checked;
+		};
+		
+		// Show selected particle lines
+		document.querySelector("input[type='checkbox']#showSelectedParticleLine").checked = sim_Ui_particleSelectedLineShow;
+		document.querySelector("input[type='checkbox']#showSelectedParticleLine").onchange = function(e) {
+			sim_Ui_particleSelectedLineShow = e.target.checked;
 		};
 		
 		// Frustrum culling
@@ -503,7 +536,7 @@ function ControlsUpdate() {
 	if (KeyboardCheckPressedOnce('F1')) { // Stop time.
 		SimStopTime();
 	}
-	if (sim_Ui_mode == SimUiModes.ADD && KeyboardCheckPressedOnce("Escape")) { // Stop adding particles.
+	if (sim_Ui_mode != SimUiModes.CAMERA && KeyboardCheckPressedOnce("Escape")) { // Stop adding particles.
 		SimUiSetMode(SimUiModes.CAMERA);
 	}
 	

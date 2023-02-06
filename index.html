@@ -8,6 +8,7 @@
 		<script src="js/graphics.js" defer></script>
 		<script src="js/draw.js" defer></script>
 		<script src="js/drawEx.js" defer></script>
+		<script src="js/physicsExample.js" defer></script>
 		<script src="js/physics.js" defer></script>
 		<script src="js/sim.js" defer></script>
 		<script src="js/controls.js" defer></script>
@@ -16,6 +17,7 @@
 		<script src="js/engine.js" defer></script>
 		<script src="js/main.js" defer></script>
 		
+		<link rel="stylesheet" type="text/css" href="css/variables.css">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		
 		<link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -60,7 +62,10 @@
 		</div>
 		<div id="contentsYLeft">
 			<h3>Particles</h3>
-			<div id="particleList" style="min-height: 80vh; max-height: 60vh; overflow: scroll;"></div>
+			<div id="particleList" class="list" style="min-height: 80vh; max-height: 60vh; overflow: scroll;"></div>
+			
+			<h3>Dark particles</h3>
+			<div id="darkParticleList" class="list" style="min-height: 80vh; max-height: 60vh; overflow: scroll;"></div>
 		</div>
 		<div id="contentsYRight">
 			<div id="sandbox">
@@ -97,6 +102,35 @@
 						<button id="addParticle">Add particles</button><span>(Add by pressing Left Click + Ctrl and finish adding by pressing Escape)</span>
 						<br>
 					</div>
+					<h4>New dark particle properties</h4>
+					<div>
+						<div class="flex">
+							<label for="getNewDarkParticleColor">Color</label>
+							<input type="color" id="getNewDarkParticleColor">
+						</div>
+						<div class="flex">
+							<label for="getNewDarkParticleName">Name</label>
+							<input type="text" id="getNewDarkParticleName">
+						</div>
+						<div class="flex">
+							<label for="getNewDarkParticleMass">Mass</label>
+							<input type="number" id="getNewDarkParticleMass">
+						</div>
+						<div class="flex">
+							<label for="getNewDarkParticleSpeedX">Speed X</label>
+							<input type="number" id="getNewDarkParticleSpeedX">
+						</div>
+						<div class="flex">
+							<label for="getNewDarkParticleSpeedY">Speed Y</label>
+							<input type="number" id="getNewDarkParticleSpeedY">
+						</div>
+						<div class="flex">
+							<label for="getNewDarkParticleSpeedZ">Speed Z</label>
+							<input type="number" id="getNewDarkParticleSpeedZ">
+						</div>
+						<button id="addDarkParticle">Add dark particles</button><span>(Add by pressing Left Click + Ctrl and finish adding by pressing Escape)</span>
+						<br>
+					</div>
 				</div>
 				
 				<h3>Presets</h3>
@@ -110,6 +144,10 @@
 					</select>
 					<button id="setPreset">Set</button>
 				</div>
+				
+				<br>
+				<br>
+				<br>
 			</div>
 			<div id="settings">
 				<h2><button id="closeSettings" title="Hide settings.">×</button> Settings</h2>
@@ -153,6 +191,7 @@
 						</select>
 						<button id="setPhysicsType">Set</button>
 					</div>
+					<p>Current: <span id="physicsTypeCurrent"></span></p>
 					<p id="physicsTypeDesc"></p>
 				</div>
 				
@@ -209,8 +248,20 @@
 							<button id="setParticleLineRate">Set</button>
 						</div>
 						
+						<input id="showParticles" type="checkbox">
+						<label for="showParticles">Show regular particles.</label>
+						<br>
+						
+						<input id="showDarkParticles" type="checkbox">
+						<label for="showDarkParticles">Show dark particles.</label>
+						<br>
+						
 						<input id="showParticleLine" type="checkbox">
 						<label for="showParticleLine">Show particle lines.</label>
+						<br>
+						
+						<input id="showSelectedParticleLine" type="checkbox">
+						<label for="showSelectedParticleLine">Show selected particle lines.</label>
 						<br>
 						
 						<input id="frustrumCulling" type="checkbox">

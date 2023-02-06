@@ -13,7 +13,7 @@ class Line {
 	}
 }
 
-function DrawParticle(particle) {
+function DrawParticle(particle, isDarkParticle) {
 	// Translate coordinates.
 	let 	coordX =	sim_Ui_cameraTransX == 'x' ? particle.posX :
 				sim_Ui_cameraTransX == 'y' ? particle.posY :
@@ -43,7 +43,7 @@ function DrawParticle(particle) {
 				particle.prevY = particle.posY;
 				particle.prevZ = particle.posZ;
 				
-				if (Object.keys(particle.lines).length > sim_Ui_particleLineCount) {
+				while (Object.keys(particle.lines).length > sim_Ui_particleLineCount) {
 					delete particle.lines[Reflect.ownKeys(particle.lines)[0]];
 				}
 			}
@@ -80,7 +80,11 @@ function DrawParticle(particle) {
 						
 						// Select particle.
 						if (keyboard_Cursor_leftReleased) {
-							SimParticleSelect(particle.id);
+							if (isDarkParticle != undefined && isDarkParticle) {
+								SimDarkParticleSelect(particle.id);
+							} else {
+								SimParticleSelect(particle.id);
+							}
 						}
 					} else {
 						// Unselect particle.
@@ -107,7 +111,8 @@ function DrawParticle(particle) {
 			}
 			
 			// Draw lines.
-			if (sim_Ui_particleLineShow) {
+			if (	sim_Ui_particleLineShow ||
+				(sim_Ui_particleSelectedLineShow && sim_Ui_particleSelect == particle)) {
 				for (const u in particle.lines) {
 					let x1, y1, x2, y2;
 					

@@ -6,7 +6,8 @@
 
 const SimUiModes = Object.freeze({
 	CAMERA: Symbol("camera"),
-	ADD: Symbol("add")
+	ADD: Symbol("add"),
+	ADD_DARK: Symbol("addDark")
 })
 
 
@@ -17,6 +18,8 @@ let sim_Ui_particleSize = 10;
 let sim_Ui_particleHovering = false;
 let sim_Ui_particleSelect = null;
 let sim_Ui_particleFollow = null;
+let sim_Ui_particleShowRegular = true;
+let sim_Ui_particleShowDark = true;
 
 let sim_Ui_cameraPosX = 0;
 let sim_Ui_cameraPosY = 0;
@@ -28,6 +31,7 @@ let sim_Ui_factorSpeed = 0.1;
 let sim_Ui_particleLineCount = 25;
 let sim_Ui_particleLineRate = 60;
 let sim_Ui_particleLineShow = true;
+let sim_Ui_particleSelectedLineShow = true;
 
 let sim_Ui_drawAsFlare = false;
 
@@ -43,6 +47,7 @@ let sim_Ui_mode = SimUiModes.CAMERA; // Mode: SimUiModes.CAMERA, SimUiModes.ADD
 
 let sim_time = 0;
 let sim_timeFactor = 10000;
+let sim_timeFactorPrev = sim_timeFactor;
 let sim_timeFrames = 0;
 
 let sim_gravity = 6.67e-11; // Gravitational constant
@@ -60,7 +65,7 @@ function SimCreation() {
 			PhysicsPreData(PhysicsPreDataType.RANDOM_SYSTEM);
 		break;
 		case "3":
-			PhysicsPreData(PhysicsPreDataType.RANDOM_GALAXY);
+			PhysicsPreData(PhysicsPreDataType.GALAXY);
 		break;
 		case "4":
 			PhysicsPreData(PhysicsPreDataType.CLUSTER);
@@ -88,8 +93,16 @@ function SimRendering() {
 function SimDrawParticles() {
 	sim_Ui_particleHovering = false;
 	
-	for (const i in physics_particles) {
-		DrawParticle(physics_particles[i]);
+	if (sim_Ui_particleShowRegular) {
+		for (const i in physics_particles) {
+			DrawParticle(physics_particles[i]);
+		}
+	}
+	
+	if (sim_Ui_particleShowDark) {
+		for (const i in physics_darkParticles) {
+			DrawParticle(physics_darkParticles[i], true);
+		}
 	}
 	
 	{ // Change cursor when hovering a particle or hovering selected particle.
@@ -114,7 +127,7 @@ function SimDrawParticles() {
 			
 				graphics_canvas.style.cursor = "pointer";
 			
-		} else if (sim_Ui_mode == SimUiModes.ADD && KeyboardCheckPressed("Control")) { // Change cursor icon when adding particle.
+		} else if (sim_Ui_mode != SimUiModes.CAMERA && KeyboardCheckPressed("Control")) { // Change cursor icon when adding particle.
 			graphics_canvas.style.cursor = "crosshair";
 		} else {
 			graphics_canvas.style.removeProperty("cursor");
@@ -124,9 +137,10 @@ function SimDrawParticles() {
 
 function SimStopTime() {
 	if (sim_timeFactor == 0) {
-		sim_timeFactor = 10000;
+		sim_timeFactor = sim_timeFactorPrev;
 		document.querySelector("button#pause").innerHTML = TEXT_PAUSE;
 	} else {
+		sim_timeFactorPrev = sim_timeFactor;
 		sim_timeFactor = 0;
 		document.querySelector("button#pause").innerHTML = TEXT_PAUSED;
 	}
@@ -137,12 +151,28 @@ function SimParticleSelect(key) {
 	sim_Ui_particleSelect = physics_particles[key];
 	
 	// Remove styles.
-	let selected = document.querySelector("div#particleList div#selected");
+	let selected = document.querySelector("div.list div#selected");
 	if (selected != null) { selected.id = ""; }
 	
 	// Apply styles.
 	if (key != null) {
+		console.log("div#particleList div[data-key='" + key + "']");
 		document.querySelector("div#particleList div[data-key='" + key + "']").id = "selected";
+	}
+}
+
+function SimDarkParticleSelect(key) {
+	// Select particle.
+	sim_Ui_particleSelect = physics_darkParticles[key];
+	
+	// Remove styles.
+	let selected = document.querySelector("div.list div#selected");
+	if (selected != null) { selected.id = ""; }
+	
+	// Apply styles.
+	if (key != null) {
+		console.log("div#darkParticleList div[data-key='" + key + "']");
+		document.querySelector("div#darkParticleList div[data-key='" + key + "']").id = "selected";
 	}
 }
 
@@ -176,8 +206,6 @@ function SimRestart() {
 	sim_time = 0;
 	sim_Ui_cameraPosX = 0;
 	sim_Ui_cameraPosY = 0;
-	
-	physics_type = PhysicsType.STAR;
 }
 
 function SimEmpty() {
@@ -185,19 +213,24 @@ function SimEmpty() {
 	physics_particleCount = 0;
 	
 	physics_darkParticles = {};
-	physics_darkParticleCount = 0;
+	//physics_darkParticleCount = 0;
 	
 	SandboxFillList();
 }
 
 function SimUiSetMode(mode) {
-	sim_Ui_mode = mode;
-	
 	// Stylize add particle button.
-	let button = document.querySelector("button#addParticle");
-	if (sim_Ui_mode == SimUiModes.ADD) {
+	let	button = document.querySelector("button#addParticle"),
+		buttonDark = document.querySelector("button#addDarkParticle");
+	
+	button.classList.remove("hold");
+	buttonDark.classList.remove("hold");
+	
+	if (mode == SimUiModes.ADD) {
 		button.classList.add("hold");
-	} else {
-		button.classList.remove("hold");
+	} else if (mode == SimUiModes.ADD_DARK) {
+		buttonDark.classList.add("hold");
 	}
+	
+	sim_Ui_mode = mode;
 }

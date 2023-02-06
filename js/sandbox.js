@@ -3,9 +3,14 @@
 // Sandbox Utilities.
 
 function SandboxFillList() {
-	document.querySelector("div#particleList").innerHTML = "";
+	SandboxUtilFillList(physics_particles, document.querySelector("div#particleList"));
+	SandboxUtilFillList(physics_darkParticles, document.querySelector("div#darkParticleList"));
+}
+
+function SandboxUtilFillList(particles, listContainer) {
+	listContainer.innerHTML = "";
 	
-	for (const i in physics_particles) {
+	for (const i in particles) {
 		let element = document.createElement("div");
 		element.classList.add("flex");
 		element.dataset.key = i;
@@ -28,13 +33,13 @@ function SandboxFillList() {
 			buttonGoto.onclick = function() {
 				SimParticleFollow(null);
 				
-				sim_Ui_cameraPosX =	sim_Ui_cameraTransX == 'x' ? -physics_particles[this.dataset.key].posX :
-							sim_Ui_cameraTransX == 'y' ? -physics_particles[this.dataset.key].posY :
-							sim_Ui_cameraTransX == 'z' ? -physics_particles[this.dataset.key].posZ : 0,
+				sim_Ui_cameraPosX =	sim_Ui_cameraTransX == 'x' ? -particles[this.dataset.key].posX :
+							sim_Ui_cameraTransX == 'y' ? -particles[this.dataset.key].posY :
+							sim_Ui_cameraTransX == 'z' ? -particles[this.dataset.key].posZ : 0,
 				
-				sim_Ui_cameraPosY =	sim_Ui_cameraTransY == 'x' ? -physics_particles[this.dataset.key].posX :
-							sim_Ui_cameraTransY == 'y' ? -physics_particles[this.dataset.key].posY :
-							sim_Ui_cameraTransY == 'z' ? -physics_particles[this.dataset.key].posZ : 0;
+				sim_Ui_cameraPosY =	sim_Ui_cameraTransY == 'x' ? -particles[this.dataset.key].posX :
+							sim_Ui_cameraTransY == 'y' ? -particles[this.dataset.key].posY :
+							sim_Ui_cameraTransY == 'z' ? -particles[this.dataset.key].posZ : 0;
 			};
 			divLeft.appendChild(buttonGoto);
 			
@@ -57,14 +62,23 @@ function SandboxFillList() {
 			buttonRemove.title = "Remove";
 			buttonRemove.innerHTML = "×";
 			buttonRemove.dataset.key = i;
-			buttonRemove.onclick = function() {
-				PhysicsParticleRemove(this.dataset.key);
-			};
+			switch (particles) {
+				case physics_particles:
+					buttonRemove.onclick = function() {
+						PhysicsParticleRemove(this.dataset.key);
+					};
+				break;
+				case physics_darkParticles:
+					buttonRemove.onclick = function() {
+						PhysicsDarkParticleRemove(this.dataset.key);
+					};
+				break;
+			}
 			divLeft.appendChild(buttonRemove);
 			
 			let title = document.createElement("h5");
 			title.style.display = "inline";
-			title.innerHTML = "Particle #" + i + ": " + physics_particles[i].name;
+			title.innerHTML = "Particle #" + i + ": " + particles[i].name;
 			divLeft.appendChild(title);
 			
 			element.appendChild(divLeft);
@@ -82,7 +96,7 @@ function SandboxFillList() {
 					buttonInfo.innerHTML = "▶";
 					
 					// Close detailed info.
-					document.querySelector("div#particleList div[data-key='" + this.dataset.key + "']").nextSibling.remove();
+					listContainer.querySelector("div[data-key='" + this.dataset.key + "']").nextSibling.remove();
 				} else if (this.dataset.clicked == "false") {
 					this.dataset.clicked = "true";
 					this.innerHTML = "▼";
@@ -109,8 +123,7 @@ function SandboxFillList() {
 							posXAdd.innerHTML = "+";
 							posXAdd.dataset.key = this.dataset.key;
 							posXAdd.onclick = function() {
-								console.log(Number(document.querySelector("input#getPosXInc_" + this.dataset.key).value));
-								physics_particles[this.dataset.key].posX += Number(document.querySelector("input#getPosXInc_" + this.dataset.key).value);
+								particles[this.dataset.key].posX += Number(document.querySelector("input#getPosXInc_" + this.dataset.key).value);
 							};
 							posX.appendChild(posXAdd);
 							
@@ -118,7 +131,7 @@ function SandboxFillList() {
 							posXSub.innerHTML = "-";
 							posXSub.dataset.key = this.dataset.key;
 							posXSub.onclick = function() {
-								physics_particles[this.dataset.key].posX -= Number(document.querySelector("input#getPosXInc_" + this.dataset.key).value);
+								particles[this.dataset.key].posX -= Number(document.querySelector("input#getPosXInc_" + this.dataset.key).value);
 							};
 							posX.appendChild(posXSub);
 							
@@ -143,7 +156,7 @@ function SandboxFillList() {
 							posYAdd.innerHTML = "+";
 							posYAdd.dataset.key = this.dataset.key;
 							posYAdd.onclick = function() {
-								physics_particles[this.dataset.key].posY += Number(document.querySelector("input#getPosYInc_" + this.dataset.key).value);
+								particles[this.dataset.key].posY += Number(document.querySelector("input#getPosYInc_" + this.dataset.key).value);
 							};
 							posY.appendChild(posYAdd);
 							
@@ -151,7 +164,7 @@ function SandboxFillList() {
 							posYSub.innerHTML = "-";
 							posYSub.dataset.key = this.dataset.key;
 							posYSub.onclick = function() {
-								physics_particles[this.dataset.key].posY -= Number(document.querySelector("input#getPosYInc_" + this.dataset.key).value);
+								particles[this.dataset.key].posY -= Number(document.querySelector("input#getPosYInc_" + this.dataset.key).value);
 							};
 							posY.appendChild(posYSub);
 							
@@ -176,7 +189,7 @@ function SandboxFillList() {
 							posZAdd.innerHTML = "+";
 							posZAdd.dataset.key = this.dataset.key;
 							posZAdd.onclick = function() {
-								physics_particles[this.dataset.key].posZ += Number(document.querySelector("input#getPosZInc_" + this.dataset.key).value);
+								particles[this.dataset.key].posZ += Number(document.querySelector("input#getPosZInc_" + this.dataset.key).value);
 							};
 							posZ.appendChild(posZAdd);
 							
@@ -184,7 +197,7 @@ function SandboxFillList() {
 							posZSub.innerHTML = "-";
 							posZSub.dataset.key = this.dataset.key;
 							posZSub.onclick = function() {
-								physics_particles[this.dataset.key].posZ -= Number(document.querySelector("input#getPosZInc_" + this.dataset.key).value);
+								particles[this.dataset.key].posZ -= Number(document.querySelector("input#getPosZInc_" + this.dataset.key).value);
 							};
 							posZ.appendChild(posZSub);
 							
@@ -209,7 +222,7 @@ function SandboxFillList() {
 							speedXAdd.innerHTML = "+";
 							speedXAdd.dataset.key = this.dataset.key;
 							speedXAdd.onclick = function() {
-								physics_particles[this.dataset.key].speedX += Number(document.querySelector("input#getSpeedXInc_" + this.dataset.key).value);
+								particles[this.dataset.key].speedX += Number(document.querySelector("input#getSpeedXInc_" + this.dataset.key).value);
 							};
 							speedX.appendChild(speedXAdd);
 							
@@ -217,7 +230,7 @@ function SandboxFillList() {
 							speedXSub.innerHTML = "-";
 							speedXSub.dataset.key = this.dataset.key;
 							speedXSub.onclick = function() {
-								physics_particles[this.dataset.key].speedX -= Number(document.querySelector("input#getSpeedXInc_" + this.dataset.key).value);
+								particles[this.dataset.key].speedX -= Number(document.querySelector("input#getSpeedXInc_" + this.dataset.key).value);
 							};
 							speedX.appendChild(speedXSub);
 							
@@ -242,7 +255,7 @@ function SandboxFillList() {
 							speedYAdd.innerHTML = "+";
 							speedYAdd.dataset.key = this.dataset.key;
 							speedYAdd.onclick = function() {
-								physics_particles[this.dataset.key].speedY += Number(document.querySelector("input#getSpeedYInc_" + this.dataset.key).value);
+								particles[this.dataset.key].speedY += Number(document.querySelector("input#getSpeedYInc_" + this.dataset.key).value);
 							};
 							speedY.appendChild(speedYAdd);
 							
@@ -250,7 +263,7 @@ function SandboxFillList() {
 							speedYSub.innerHTML = "-";
 							speedYSub.dataset.key = this.dataset.key;
 							speedYSub.onclick = function() {
-								physics_particles[this.dataset.key].speedY -= Number(document.querySelector("input#getSpeedYInc_" + this.dataset.key).value);
+								particles[this.dataset.key].speedY -= Number(document.querySelector("input#getSpeedYInc_" + this.dataset.key).value);
 							};
 							speedY.appendChild(speedYSub);
 							
@@ -275,7 +288,7 @@ function SandboxFillList() {
 							speedZAdd.innerHTML = "+";
 							speedZAdd.dataset.key = this.dataset.key;
 							speedZAdd.onclick = function() {
-								physics_particles[this.dataset.key].speedZ += Number(document.querySelector("input#getSpeedZInc_" + this.dataset.key).value);
+								particles[this.dataset.key].speedZ += Number(document.querySelector("input#getSpeedZInc_" + this.dataset.key).value);
 							};
 							speedZ.appendChild(speedZAdd);
 							
@@ -283,7 +296,7 @@ function SandboxFillList() {
 							speedZSub.innerHTML = "-";
 							speedZSub.dataset.key = this.dataset.key;
 							speedZSub.onclick = function() {
-								physics_particles[this.dataset.key].speedZ -= Number(document.querySelector("input#getSpeedZInc_" + this.dataset.key).value);
+								particles[this.dataset.key].speedZ -= Number(document.querySelector("input#getSpeedZInc_" + this.dataset.key).value);
 							};
 							speedZ.appendChild(speedZSub);
 							
@@ -302,14 +315,14 @@ function SandboxFillList() {
 							let massInput = document.createElement("input");
 							massInput.id = "getMass_" + this.dataset.key;
 							massInput.type = "number";
-							massInput.value = physics_particles[this.dataset.key].mass;
+							massInput.value = particles[this.dataset.key].mass;
 							mass.appendChild(massInput);
 							
 							let massButton = document.createElement("button");
 							massButton.innerHTML = "Set";
 							massButton.dataset.key = this.dataset.key;
 							massButton.onclick = function() {
-								physics_particles[this.dataset.key].mass = Number(document.querySelector("input#getMass_" + this.dataset.key).value);
+								particles[this.dataset.key].mass = Number(document.querySelector("input#getMass_" + this.dataset.key).value);
 							};
 							mass.appendChild(massButton);
 							
@@ -317,7 +330,7 @@ function SandboxFillList() {
 						}
 					}
 					
-					document.querySelector("div#particleList div[data-key='" + this.dataset.key + "']").after(info);
+					listContainer.querySelector("div[data-key='" + this.dataset.key + "']").after(info);
 				}
 			};
 			
@@ -327,7 +340,7 @@ function SandboxFillList() {
 			element.appendChild(divRight);
 		}
 		
-		document.querySelector("div#particleList").appendChild(element);
-		document.querySelector("div#particleList").appendChild(document.createElement("hr"));
+		listContainer.appendChild(element);
+		listContainer.appendChild(document.createElement("hr"));
 	}
 }

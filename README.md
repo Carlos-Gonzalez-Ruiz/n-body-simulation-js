@@ -9,6 +9,13 @@ It is possible to fix this by repeating the process again with a lesser time fac
 
 ## Changelog
 
+### Version 0.4
+ - Added show only selected particle line.
+ - Added dark particles.
+ - Added different types of physics depending on presets.
+ - Added JS tab so you can create your own particle settings programmatically.
+ - Minor fixes.
+
 ### Version 0.3
  - Added -+X, -+Y, -+Z axes when displaying grid.
  - Added canvas coordinate translation.

@@ -7,7 +7,7 @@
 const PhysicsPreDataType = Object.freeze({
 	SOLAR_SYSTEM: Symbol("SOLAR_SYSTEM"),
 	RANDOM_SYSTEM: Symbol("RANDOM_SYSTEM"),
-	RANDOM_GALAXY: Symbol("RANDOM_GALACY"),
+	GALAXY: Symbol("GALAXY"),
 	CLUSTER: Symbol("CLUSTER"),
 	SUPERCLUSTER: Symbol("SUPERCLUSTER")
 })
@@ -70,7 +70,7 @@ let physics_particles = {};
 let physics_particleCount = 0;
 
 let physics_darkParticles = {};
-let physics_darkParticleCount = 0;
+//let physics_darkParticleCount = 0;
 
 
 // Functions
@@ -80,84 +80,23 @@ function PhysicsPreData(example) {
 	SimEmpty();
 	
 	if (example == undefined) {
-		PhysicsSetType(PhysicsType.STAR);
-		
-		physics_particles[0] = new Particle( 0.0,0.0,0.0,        0.0,0.0,0.0,        1.989e30, "yellow", "Sol"); // a star similar to the sun
-		physics_particles[1] = new Particle( 57.909e9,0.0,0.0,   0.0,47.36e3,0.0,    0.33011e24, "gray", "Mercury"); // a planet similar to mercury
-		physics_particles[2] = new Particle( 108.209e9,0.0,0.0,  0.0,35.02e3,0.0,    4.8675e24, "orange", "Venus"); // a planet similar to venus
-		physics_particles[3] = new Particle( 149.596e9,0.0,0.0,  0.0,29.78e3,0.0,    5.9724e24, "green", "Earth"); // a planet similar to earth
-		physics_particles[4] = new Particle( 227.923e9,0.0,0.0,  0.0,24.07e3,0.0,    0.64171e24, "red", "Mars"); // a planet similar to mars
-		physics_particles[5] = new Particle( 778.570e9,0.0,0.0,  0.0,13e3,0.0,       1898.19e24, "brown", "Jupiter"); // a planet similar to jupiter
-		physics_particles[6] = new Particle( 1433.529e9,0.0,0.0, 0.0,9.68e3,0.0,     568.34e24, "yellow", "Saturn"); // a planet similar to saturn
-		physics_particles[7] = new Particle( 2872.463e9,0.0,0.0, 0.0,6.80e3,0.0,     86.813e24, "lightblue", "Uranus"); // a planet similar to uranus
-		physics_particles[8] = new Particle( 4495.060e9,0.0,0.0, 0.0,5.43e3,0.0,     102.413e24, "blue", "Neptune"); // a planet similar to neptune
+		PhysicsExample_solarSystem();
 	} else {
 		switch (example.toString()) {
 			case PhysicsPreDataType.SOLAR_SYSTEM.toString():
-				PhysicsSetType(PhysicsType.STAR);
-				
-				physics_particles[0] = new Particle( 0.0,0.0,0.0,        0.0,0.0,0.0,        1.989e30, "yellow", "Sol"); // a star similar to the sun
-				physics_particles[1] = new Particle( 57.909e9,0.0,0.0,   0.0,47.36e3,0.0,    0.33011e24, "gray", "Mercury"); // a planet similar to mercury
-				physics_particles[2] = new Particle( 108.209e9,0.0,0.0,  0.0,35.02e3,0.0,    4.8675e24, "orange", "Venus"); // a planet similar to venus
-				physics_particles[3] = new Particle( 149.596e9,0.0,0.0,  0.0,29.78e3,0.0,    5.9724e24, "green", "Earth"); // a planet similar to earth
-				physics_particles[4] = new Particle( 227.923e9,0.0,0.0,  0.0,24.07e3,0.0,    0.64171e24, "red", "Mars"); // a planet similar to mars
-				physics_particles[5] = new Particle( 778.570e9,0.0,0.0,  0.0,13e3,0.0,       1898.19e24, "brown", "Jupiter"); // a planet similar to jupiter
-				physics_particles[6] = new Particle( 1433.529e9,0.0,0.0, 0.0,9.68e3,0.0,     568.34e24, "yellow", "Saturn"); // a planet similar to saturn
-				physics_particles[7] = new Particle( 2872.463e9,0.0,0.0, 0.0,6.80e3,0.0,     86.813e24, "lightblue", "Uranus"); // a planet similar to uranus
-				physics_particles[8] = new Particle( 4495.060e9,0.0,0.0, 0.0,5.43e3,0.0,     102.413e24, "blue", "Neptune"); // a planet similar to neptune
+				PhysicsExample_solarSystem();
 			break;
 			case PhysicsPreDataType.RANDOM_SYSTEM.toString():
-				PhysicsSetType(PhysicsType.STAR);
-				
-				physics_particles[0] = new Particle( 0.0,0.0,0.0,        0.0,0.0,0.0,        1e30 + Math.random() * 2e30, "yellow", "Sol");
-				let dst = 0;
-				for (let i = 1; i < 2 + Math.random() * 15; ++i) {
-					dst += Math.random() * 150e9;
-					
-					physics_particles[i] = new Particle(	dst, 0, 0,
-										
-										0,
-										PhysicsCalculateEscapeVelocity(physics_particles[0].mass, dst),
-										0,
-										
-										Math.random() * 100e24,
-										"gray",
-										"N" + i);
-				}
+				PhysicsExample_randomSystem();
 			break;
-			case PhysicsPreDataType.RANDOM_GALAXY.toString():
-				PhysicsSetType(PhysicsType.GALAXY);
-				
-				/*let dst = 0, starMass = 2e30 * Math.random();
-				for (let i = 1; i < 11; ++i) {
-					dst += Math.random() * 150e9;
-					
-					for (let u = 0; u < (10 - i) * i; ++u) {
-						let	angle = Math.random() * 2 * Math.PI,
-							mass = Math.random() * 100e24,
-							spd = Math.pow(sim_gravity * starMass / (dst * (1 + Math.random())), 1 / 2);
-						
-						starMass += mass;
-						
-						physics_particles[i * 10 + u] = new Particle(	Math.cos(angle) * dst + Math.random() * 100e9, Math.sin(angle) * dst + Math.random() * 100e9, 0,
-												Math.cos(angle + Math.PI / 2) * spd, Math.sin(angle + Math.PI / 2) * spd, 0,
-												mass*0,
-												"gray",
-												"N" + i);
-					}
-				}
-				physics_particles[0] = new Particle( 0.0,0.0,0.0,        0.0,0.0,0.0,        starMass, "yellow", "Sol");*/
-				console.log("random_galaxy");
+			case PhysicsPreDataType.GALAXY.toString():
+				PhysicsExample_galaxy();
 			break;
 			case PhysicsPreDataType.CLUSTER.toString():
-				PhysicsSetType(PhysicsType.CLUSTER);
-				
-				console.log("galaxy_cluster");
+				PhysicsExample_cluster();
 			break;
 			case PhysicsPreDataType.SUPERCLUSTER.toString():
-				PhysicsSetType(PhysicsType.SUPERCLUSTER);
-				
-				console.log("galaxy_supercluster");
+				PhysicsExample_supercluster();
 			break;
 		}
 	}
@@ -311,17 +250,49 @@ function PhysicsUpdate() {
 }
 
 function PhysicsSetType(type) {
+	let current = document.querySelector("span#physicsTypeCurrent");
+	switch (type.toString()) {
+		case PhysicsType.STAR.toString():
+			current.innerText = TEXT_STAR;
+		break;
+		case PhysicsType.GALAXY.toString():
+			current.innerText = TEXT_GALAXY;
+		break;
+		case PhysicsType.CLUSTER.toString():
+			current.innerText = TEXT_CLUSTER;
+		break;
+		case PhysicsType.SUPERCLUSTER.toString():
+			current.innerText = TEXT_SUPERCLUSTER;
+		break;
+	}
+	
 	physics_type = type;
 }
 
 function PhysicsParticleAdd(particle) {
-	physics_particles[Object.keys(physics_particles).length] = particle;
+	// Since JS will first construct the object, physics_particleCount and particle ID will hold different values,
+	// hence the physics_particleCount - 1.
+	physics_particles[physics_particleCount - 1] = particle;
 	
 	SandboxFillList();
 }
 
 function PhysicsParticleRemove(key) {
 	delete physics_particles[key];
+	
+	SandboxFillList();
+}
+
+function PhysicsDarkParticleAdd(particle) {
+	// Since JS will first construct the object, physics_particleCount and particle ID will hold different values,
+	// hence the physics_particleCount - 1.
+	physics_darkParticles[physics_particleCount - 1] = particle;
+	
+	SandboxFillList();
+}
+
+function PhysicsDarkParticleRemove(key) {
+	delete physics_darkParticles[key];
 	
 	SandboxFillList();
 }
