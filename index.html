@@ -139,8 +139,9 @@
 						<option value="1">Solar System</option>
 						<option value="2">Random system</option>
 						<option value="3">Random galaxy</option>
-						<option value="4">Galaxy cluster</option>
-						<option value="5">Galaxy supercluster</option>
+						<option value="4">Galaxy collision</option>
+						<option value="5">Galaxy cluster</option>
+						<option value="6">Galaxy supercluster</option>
 					</select>
 					<button id="setPreset">Set</button>
 				</div>
@@ -160,7 +161,7 @@
 						<button id="setGravity">Set</button>
 					</div>
 					<div class="flex">
-						<label for="getHubble">Hubble</label>
+						<label for="getHubble">Hubble parameter</label>
 						<input type="number" id="getHubble">
 						<button id="setHubble">Set</button>
 					</div>
@@ -226,6 +227,14 @@
 					
 					<h4>Particle</h4>
 					<div>
+						<input id="showParticles" type="checkbox">
+						<label for="showParticles">Show regular particles.</label>
+						<br>
+						
+						<input id="showDarkParticles" type="checkbox">
+						<label for="showDarkParticles">Show dark particles.</label>
+						<br>
+						
 						<label>Particle size</label>
 						<button id="moreSize">+</button>
 						<button id="lessSize">-</button>
@@ -247,14 +256,6 @@
 							<input type="number" id="getParticleLineRate">
 							<button id="setParticleLineRate">Set</button>
 						</div>
-						
-						<input id="showParticles" type="checkbox">
-						<label for="showParticles">Show regular particles.</label>
-						<br>
-						
-						<input id="showDarkParticles" type="checkbox">
-						<label for="showDarkParticles">Show dark particles.</label>
-						<br>
 						
 						<input id="showParticleLine" type="checkbox">
 						<label for="showParticleLine">Show particle lines.</label>

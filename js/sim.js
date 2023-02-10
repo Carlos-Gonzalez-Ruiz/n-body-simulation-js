@@ -30,7 +30,7 @@ let sim_Ui_factorSpeed = 0.1;
 
 let sim_Ui_particleLineCount = 25;
 let sim_Ui_particleLineRate = 60;
-let sim_Ui_particleLineShow = true;
+let sim_Ui_particleLineShow = false;
 let sim_Ui_particleSelectedLineShow = true;
 
 let sim_Ui_drawAsFlare = false;
@@ -46,7 +46,7 @@ let sim_Ui_frustrumCulling = false;
 let sim_Ui_mode = SimUiModes.CAMERA; // Mode: SimUiModes.CAMERA, SimUiModes.ADD
 
 let sim_time = 0;
-let sim_timeFactor = 10000;
+let sim_timeFactor = 500000/*10000*/;
 let sim_timeFactorPrev = sim_timeFactor;
 let sim_timeFrames = 0;
 
@@ -68,9 +68,12 @@ function SimCreation() {
 			PhysicsPreData(PhysicsPreDataType.GALAXY);
 		break;
 		case "4":
-			PhysicsPreData(PhysicsPreDataType.CLUSTER);
+			PhysicsPreData(PhysicsPreDataType.GALAXY_COLLISION);
 		break;
 		case "5":
+			PhysicsPreData(PhysicsPreDataType.CLUSTER);
+		break;
+		case "6":
 			PhysicsPreData(PhysicsPreDataType.SUPERCLUSTER);
 		break;
 		default:
@@ -178,7 +181,7 @@ function SimDarkParticleSelect(key) {
 
 function SimParticleFollow(key) {
 	// Remove style from previous button.
-	let elementOld = document.querySelector("div#particleList button.follow#following");
+	let elementOld = document.querySelector("div.list button.follow#following");
 	if (elementOld != null) {
 		elementOld.id = "";
 		elementOld.title = "Follow particle";
@@ -191,7 +194,7 @@ function SimParticleFollow(key) {
 		sim_Ui_particleFollow = null;
 	} else {
 		// Modify element.
-		let elementNew = document.querySelector("div#particleList button.follow[data-key='" + key + "']");
+		let elementNew = document.querySelector("div.list button.follow[data-key='" + key + "']");
 		elementNew.id = "following";
 		elementNew.title = "Unfollow particle";
 		elementNew.classList.add("hold");
@@ -199,6 +202,32 @@ function SimParticleFollow(key) {
 		
 		// Follow particle.
 		sim_Ui_particleFollow = physics_particles[key];
+	}
+}
+
+function SimDarkParticleFollow(key) {
+	// Remove style from previous button.
+	let elementOld = document.querySelector("div.list button.follow#following");
+	if (elementOld != null) {
+		elementOld.id = "";
+		elementOld.title = "Follow particle";
+		elementOld.classList.remove("hold")
+		elementOld.dataset.following = "false";
+	}
+	
+	if (key == null) {
+		// Unfollow particle.
+		sim_Ui_particleFollow = null;
+	} else {
+		// Modify element.
+		let elementNew = document.querySelector("div.list button.follow[data-key='" + key + "']");
+		elementNew.id = "following";
+		elementNew.title = "Unfollow particle";
+		elementNew.classList.add("hold");
+		elementNew.dataset.following = "true";
+		
+		// Follow particle.
+		sim_Ui_particleFollow = physics_darkParticles[key];
 	}
 }
 

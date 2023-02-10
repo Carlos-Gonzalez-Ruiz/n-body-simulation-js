@@ -62,18 +62,18 @@ const TEXT_CLUSTER = "Cluster";
 const TEXT_SUPERCLUSTER = "Supercluster";
 
 const PHYSICS_TYPE_STAR_DESC = `
-Physics for regular particles are calculated and dark particles are ignored (mass = 0, speed = 0).
+Star: Physics for regular particles are calculated and dark particles are ignored (mass = 0, speed = 0).
 `;
 
 const PHYSICS_TYPE_GALAXY_DESC = `
-Regular particles are affected by dark particles, but not by regular particles (mass = 0). Physics for dark particles are calculated.
+Galaxy: Regular particles are affected by dark particles, but not by regular particles (mass = 0). Physics for dark particles are calculated.
 `;
 
 const PHYSICS_TYPE_CLUSTER_DESC = `
-Regular particles are affected by dark particles, but not by regular particles (mass = 0). Physics for dark particles are calculated.
+Cluster: Regular particles are affected by dark particles, but not by regular particles (mass = 0). Physics for dark particles are calculated.
 `;
 
 const PHYSICS_TYPE_SUPERCLUSTER_DESC = `
-Regular particles are affected by dark particles, but not by regular particles (mass = 0). Physics for dark particles are calculated.
+Supercluster: Regular particles are affected by dark particles, but not by regular particles (mass = 0). Physics for dark particles are calculated.
 Aditionally, expansion of space is applied.
 `;

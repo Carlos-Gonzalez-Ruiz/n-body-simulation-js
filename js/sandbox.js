@@ -49,13 +49,18 @@ function SandboxUtilFillList(particles, listContainer) {
 			buttonFollow.dataset.key = i;
 			buttonFollow.dataset.following = "false";
 			buttonFollow.classList.add("follow");
-			buttonFollow.onclick = function() {
-				if (this.dataset.following == "true") {
-					SimParticleFollow(null);
-				} else if (this.dataset.following == "false") {
-					SimParticleFollow(this.dataset.key);
-				}
-			};
+			switch (particles) {
+				case physics_particles:
+					buttonFollow.onclick = function() {
+						SimParticleFollow(this.dataset.key);
+					};
+				break;
+				case physics_darkParticles:
+					buttonFollow.onclick = function() {
+						SimDarkParticleFollow(this.dataset.key);
+					};
+				break;
+			}
 			divLeft.appendChild(buttonFollow);
 			
 			let buttonRemove = document.createElement("button");

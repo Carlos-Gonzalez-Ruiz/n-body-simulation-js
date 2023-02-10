@@ -36,41 +36,77 @@ function PhysicsExample_randomSystem() {
 	}
 }
 
+function PhysicsExampleInstatiateGalaxy(name, posX, posY, spdX, spdY, rings, perRing, dstPerRing, galaxyMass, maxStarMass) {	
+	let dst = 0;
+	for (let i = 0; i < rings; ++i) {
+		dst += Math.random() * dstPerRing;
+		
+		for (let u = 0; u < perRing; ++u) {
+			let	angle = Math.random() * 2 * Math.PI,
+				mass = Math.random() * maxStarMass,
+				spd = Math.pow(sim_gravity * galaxyMass / (dst * (1 + Math.random())), 1 / 2);
+				//spd = Math.pow(sim_gravity * galaxyMass / dst, 1 / 2);
+			
+			galaxyMass += mass * 5;
+			
+			PhysicsParticleFastAdd(
+				new Particle(	posX + Math.cos(angle) * dst + Math.random() * 100e9, posY + Math.sin(angle) * dst + Math.random() * 100e9, 0,
+						spdX + Math.cos(angle + Math.PI / 2) * spd, spdY + Math.sin(angle + Math.PI / 2) * spd, 0,
+						mass,
+						"gray",
+						"N" + (physics_particleCount + i * perRing + u))
+			);
+		}
+	}
+	
+	// Galactic core
+	PhysicsDarkParticleFastAdd(
+		new Particle(	posX, posY, 0.0,
+				spdX, spdY, 0.0,
+				galaxyMass, "yellow", name)
+	);
+}
+
 function PhysicsExample_galaxy() {
 	PhysicsSetType(PhysicsType.GALAXY);
 	
-	let dst = 0, starMass = 2e30 * Math.random();
-	for (let i = 0; i < 10; ++i) {
-		dst += Math.random() * 150e9;
-		
-		for (let u = 0; u < 50; ++u) {
-			let	angle = Math.random() * 2 * Math.PI,
-				mass = Math.random() * 100e24,
-				spd = Math.pow(sim_gravity * starMass / (dst * (1 + Math.random())), 1 / 2);
-			
-			//starMass += mass;
-			
-			physics_particles[i * 50 + u] = new Particle(	Math.cos(angle) * dst + Math.random() * 100e9, Math.sin(angle) * dst + Math.random() * 100e9, 0,
-									Math.cos(angle + Math.PI / 2) * spd, Math.sin(angle + Math.PI / 2) * spd, 0,
-									mass,
-									"gray",
-									"N" + i);
-		}
-	}
-	physics_darkParticles[physics_particleCount] = new Particle(	0.0, 0.0, 0.0,
-									0.0, 0.0, 0.0,
-									starMass, "yellow", "Sol");
-	console.log("random_galaxy");
+	PhysicsExampleInstatiateGalaxy(	"Galactic core",
+					0, 0,
+					0, 0,
+					5, 50,
+					150e9,
+					2e29 * Math.random() * 0.1,
+					100e23);
+}
+
+function PhysicsExample_galaxy2() {
+	PhysicsSetType(PhysicsType.GALAXY);
+	
+	PhysicsExampleInstatiateGalaxy(	"Milky Way",
+					-10000e9, 0,
+					-10e2 + Math.random() * 10e2 * 2, -10e2 + Math.random() * 10e2 * 2,
+					5, 25,
+					150e9,
+					2e32 * Math.random() * 0.1,
+					100e23);
+	
+	PhysicsExampleInstatiateGalaxy(	"Andromeda",
+					0, 0,
+					-10e2 + Math.random() * 10e2 * 2, -10e2 + Math.random() * 10e2 * 2,
+					10, 25,
+					150e9,
+					4e32 * Math.random() * 0.1,
+					100e23);
 }
 
 function PhysicsExample_cluster() {
 	PhysicsSetType(PhysicsType.CLUSTER);
 	
-	console.log("galaxy_cluster");
+	console.log("TODO: galaxy_cluster");
 }
 
 function PhysicsExample_supercluster() {
 	PhysicsSetType(PhysicsType.SUPERCLUSTER);
 	
-	console.log("galaxy_supercluster");
+	console.log("TODO: galaxy_supercluster");
 }

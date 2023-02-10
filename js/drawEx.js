@@ -101,7 +101,7 @@ function DrawParticle(particle, isDarkParticle) {
 					DrawText(	(coordX + sim_Ui_cameraPosX) / sim_Ui_particleFactor + 24,
 							(coordY + sim_Ui_cameraPosY) / sim_Ui_particleFactor,
 							"[ " + particle.name + " ]\n" +
-							"Mass: " + particle.mass + "\n" +
+							"Mass: " + (particle.mass + particle.tmpMass) + "\n" +
 							"Speed X: " + particle.speedX + "\n" +
 							"Speed Y: " + particle.speedY + "\n" +
 							"Speed Z: " + particle.speedZ,

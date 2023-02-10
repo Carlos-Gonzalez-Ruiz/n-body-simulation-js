@@ -262,9 +262,12 @@ function ControlsCreation() {
 					PhysicsPreData(PhysicsPreDataType.GALAXY);
 				break;
 				case "4":
-					PhysicsPreData(PhysicsPreDataType.CLUSTER);
+					PhysicsPreData(PhysicsPreDataType.GALAXY_COLLISION);
 				break;
 				case "5":
+					PhysicsPreData(PhysicsPreDataType.CLUSTER);
+				break;
+				case "6":
 					PhysicsPreData(PhysicsPreDataType.SUPERCLUSTER);
 				break;
 			}
